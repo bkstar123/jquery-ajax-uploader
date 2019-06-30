@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-    entry: './src/bkstar123-ajax-uploader.js',
+    entry: './src/index.js',
     output: {
         filename: 'bkstar123-ajax-uploader.min.js',
         path: path.resolve(__dirname, 'dist')
