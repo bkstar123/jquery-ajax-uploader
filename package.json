@@ -1,5 +1,5 @@
 {
-  "name": "@bkstar123/jquery-ajax-uploader",
+  "name": "@bkstar18/jquery-ajax-uploader",
   "version": "1.0.3",
   "description": "JQuery plugin for Ajax  uploading",
   "main": "./src/index.js",
