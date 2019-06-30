@@ -7,10 +7,10 @@
 ;
 (function($, window, document, undefined) {
 
-    var pluginName = 'bkstar123_ajaxUploader';
+    let pluginName = 'bkstar123_ajaxUploader';
     $.fn[pluginName] = function(options) {
 
-        var settings = $.extend({}, $.fn[pluginName].defaults, options);
+        let settings = $.extend({}, $.fn[pluginName].defaults, options);
 
         function validateFile(file, uploadInputId) {
             let fileExtension = file.name.split('.').pop();
@@ -101,12 +101,11 @@
                 return;
             }
             createUploadProgressContainerDiv(uploadInputId);
+
             let fd = new FormData();
             fd.append(uploadInputName, file);
-            fd.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-            var xhr = new XMLHttpRequest();
-
+            let xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
@@ -129,12 +128,22 @@
                 }
             };
 
-            xhr.open('POST', '/upload', true);
+            xhr.open('POST', settings.uploadUrl, true);
+
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            if (token) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', token.content);
+            } else {
+                console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+            }
+
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            settings.beforeSend(xhr);
             xhr.send(fd);
         }
 
-        var uploadInputId = $(this).attr('id');
-        var uploadInputName = $(this).attr('name');
+        let uploadInputId = $(this).attr('id');
+        let uploadInputName = $(this).attr('name');
         createUploadContainerDiv(uploadInputId);
 
         $(this).click(function() {
@@ -157,7 +166,9 @@
     };
     $.fn[pluginName].defaults = {
         size: 5242880, //5MB
-        allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'pdf'],
+        uploadUrl: '/upload',
         batchSize: 5,
+        allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'pdf'],
+        beforeSend(xhr) {}
     };
 })(jQuery, window, document);

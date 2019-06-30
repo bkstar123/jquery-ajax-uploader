@@ -1,6 +1,6 @@
 # JQuery-Ajax-Uploader
 
-This JQuery plugin enables a basic Ajax file uploading on the frontend side. It is supposed to be used together with any backend.  
+This JQuery plugin enables a basic Ajax file uploading feature on the frontend side. It is supposed to be used together with any Laravel backend.  
 
 ## Requirements
 
