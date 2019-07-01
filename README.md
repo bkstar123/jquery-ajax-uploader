@@ -34,7 +34,7 @@ Passing ```settings``` to ```bkstar123_ajaxuploader()``` is optional. If you do 
 
 ```javascript
 defaults = {
-	size: 5242880, // In bytes <=> 5MB
+    size: 5242880, // In bytes <=> 5MB
     uploadUrl: '/upload', // Backend URL to upload file
     batchSize: 5, // Maximum number of files that can be uploaded in parallel
     allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'pdf'], // Accepted file extensions
