@@ -76,9 +76,9 @@ There are two callback hook that you can use, that are, ```beforeSend(xhr)``` an
 
 - ```onResponse(response)``` hook is called when the uploading process is completed (xhr.readystate = 4, no matter success or failure). It is passed with the whole server response.  
 
-Example:  
+**Example**:  
 ```javascript
-$('#image-upload').bkstar123_ajaxUploader({
+$('#image-upload').bkstar123_ajaxuploader({
     allowedExtensions: ['png','jpg','jpeg'],
     batchSize: 5,
     outerClass: 'col-md-12',
