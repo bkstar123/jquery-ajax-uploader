@@ -64,7 +64,7 @@ Sample structure of JSON responses are as follows:
 ```
 
 **Advanced use**:  
-The plugin will automatically wrap the selected ```<input type="file" />```  element in a outer element ```<div class="bkstar123-ajaxuploader-container-image-upload col-md-12" id="bkstar123-ajaxuploader-container-image-upload col-md-12">```  
+The plugin will automatically wrap the selected ```<input type="file" />```  element in a outer element ```<div class="bkstar123-ajaxuploader-container-image-upload" id="bkstar123-ajaxuploader-container-image-upload">```  
 
 Where ```bkstar123-ajaxuploader``` is a prefix that you can change by ```prefix``` key in the ```settings``` argument.  
 
