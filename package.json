@@ -1,6 +1,6 @@
 {
   "name": "@bkstar18/jquery-ajax-uploader",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "JQuery plugin for Ajax  uploading",
   "main": "./src/index.js",
   "scripts": {
