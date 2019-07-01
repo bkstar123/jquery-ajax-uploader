@@ -1,4 +1,4 @@
-/*!
+/**
  * jQuery bkstar123-ajaxuploader plugin
  * author: tuanha
  * last-mod: 2019-06-30
@@ -7,7 +7,7 @@
 ;
 (function($, window, document, undefined) {
 
-    let pluginName = 'bkstar123_ajaxUploader';
+    let pluginName = 'bkstar123_ajaxuploader';
     $.fn[pluginName] = function(options) {
         let settings = $.extend({}, $.fn[pluginName].defaults, options);
 
@@ -15,7 +15,7 @@
             let fileExtension = file.name.split('.').pop();
             let uploadErrorContainerDivSelector = `#${settings.prefix}-error-for-${uploadInputId}`;
             if (settings.allowedExtensions.indexOf(fileExtension) < 0) {
-                $(uploadErrorContainerDivSelector).append(`<li>${fileExtension} is not allowed</li>`);
+                $(uploadErrorContainerDivSelector).append(`<li>${fileExtension} extension is not allowed</li>`);
                 $(uploadErrorContainerDivSelector).show();
                 return false;
             }
@@ -65,9 +65,7 @@
             if ($(`#${uploadErrorContainerDivId}`).length > 0) {
                 return;
             }
-            let html = `<div class="alert alert-danger"
-                 id="${uploadErrorContainerDivId}" 
-                 style="display:none" role="alert"></div>`;
+            let html = `<div class="alert alert-danger" id="${uploadErrorContainerDivId}" style="display:none" role="alert"></div>`;
             $(rootContainerSelector).append(html);
         }
 
@@ -77,9 +75,7 @@
             if ($(`#${uploadSuccessContainerDivId}`).length > 0) {
                 return;
             }
-            let html = `<div class="alert alert-success"
-                id="${uploadSuccessContainerDivId}" 
-                style="display:none" role="alert"></div>`;
+            let html = `<div class="alert alert-success" id="${uploadSuccessContainerDivId}" style="display:none" role="alert"></div>`;
             $(rootContainerSelector).append(html);
         }
 
@@ -89,10 +85,8 @@
             if ($(`#${progressBarDivId}`).length > 0) {
                 return;
             }
-            let html = `<div class="progress" id="progress-${uploadInputId}">
-                <div class="progress-bar" id="${progressBarDivId}" 
-                role="progressbar" style="width: 0%" aria-valuenow="25"
-                aria-valuemin="0" aria-valuemax="100"></div> </div>`;
+            let html = `<div class="progress" id="progress-${uploadInputId}"><div class="progress-bar" id="${progressBarDivId}"` +
+                'role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div></div>';
             $(rootContainerSelector).prepend(html);
         }
 
@@ -110,13 +104,14 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         let uploadSuccessContainerDivSelector = `#${settings.prefix}-success-for-${uploadInputId}`;
-                        $(uploadSuccessContainerDivSelector).append(`<li>${JSON.parse(xhr.responseText).filename} has been uploaded</li>`);
+                        $(uploadSuccessContainerDivSelector).append(`<li>${JSON.parse(xhr.responseText).success}</li>`);
                         $(uploadSuccessContainerDivSelector).show();
                     } else {
                         let uploadErrorContainerDivSelector = `#${settings.prefix}-error-for-${uploadInputId}`;
-                        $(uploadErrorContainerDivSelector).append(`<li>${JSON.parse(xhr.responseText)}</li>`);
+                        $(uploadErrorContainerDivSelector).append(`<li>${JSON.parse(xhr.responseText).error}</li>`);
                         $(uploadErrorContainerDivSelector).show();
                     }
+                    settings.onResponse(xhr.response);
                 }
             };
             xhr.upload.onprogress = function(event) {
@@ -143,7 +138,6 @@
         }
 
         let uploadInputId = $(this).attr('id');
-        let uploadInputName = $(this).attr('name');
         createUploadContainerDiv(uploadInputId);
 
         $(this).click(function() {
@@ -157,6 +151,7 @@
             if (!validateBatch(files, uploadInputId)) {
                 return;
             }
+            let uploadInputName = $(this).attr('name');
             for (let i = 0; i < files.length; i++) {
                 sendFile(files[i], uploadInputId, uploadInputName);
             }
@@ -171,6 +166,7 @@
         outerClass: '',
         prefix: 'bkstar123-ajaxuploader',
         allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'pdf'],
-        beforeSend(xhr) {}
+        beforeSend(xhr) {},
+        onResponse(response) {}
     };
 })(jQuery, window, document);
