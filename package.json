@@ -9,7 +9,7 @@
     "prod": "webpack --mode production"
   },
   "keywords": [
-    "jquery-plugin"
+    "jquery-plugin", "ajax", "upload"
   ],
   "author": "hoangtuandhbk@gmail.com",
   "license": "MIT",
