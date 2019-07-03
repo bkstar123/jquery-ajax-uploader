@@ -61,13 +61,14 @@ defaults = {
     uploadUrl: '/upload', // Backend URL to upload file
     batchSize: 5, // Maximum number of files that can be uploaded in parallel
     allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'pdf'], // Accepted file extensions
+    progressBarColor: 'bg-primary', // set the color of the progress bar, see https://getbootstrap.com/docs/4.3/components/progress/
 }
 ```
 
 All these default settings can be overwritten by the ```settings``` argument that you pass to ```bkstar123_ajaxuploader()```.  
 
 **Important Note**:  
-The plugim expects to receive JSON response from the backend with ```success``` key in case of success or ```error``` key in case of error.  
+The plugin expects to receive JSON response from the backend with ```success``` key in case of success or ```error``` key in case of error.  
 
 Sample structure of JSON responses are as follows:  
 ***a) Success response***  
@@ -93,7 +94,7 @@ Where ```bkstar123-ajaxuploader``` is a prefix that you can change by ```prefix`
 
 You can also add more class to the wrapping element by ```outerClass``` key in the ```settings``` argument.  
 
-There are two callback hook that you can use, that are, ```beforeSend(xhr)``` and ```onResponse(respomse)```:  
+There are two callback hooks that you can use, that are, ```beforeSend(xhr)``` and ```onResponse(respomse)```:  
 
 - ```beforeSend(xhr)``` hook is called right before sending files to the server, and it is passed with the whole XmlHttpRequest object. You can use this hook to modify the behavior of XHR object before it start sending files to the server, for example to add more request header like ```xhr.setRequestHeader(header, value)```.  
 
@@ -111,7 +112,9 @@ $('#image-upload').bkstar123_ajaxuploader({
     },
     onResponse: (response) => {
         let res = JSON.parse(response)
-        $('#gallery').append(`<img id=${res.data.filename} src="${res.data.url}" width="50px">`);
+        if (res.data) {
+            $('#gallery').append(`<img id="${res.data.filename}" src="${res.data.url}" width="50px">`);
+        }
     }
 });
 ```
@@ -122,6 +125,7 @@ This section will demonstrate how to build a completed system (both backend & fr
 
 **Backend**:
 - Built from a new & clean Laravel application with the use of ***bkstar123/laravel-uploader*** package (written by myself)  
+(See its full documentation at https://github.com/bkstar123/laravel-uploader)     
 
 **Frontend**:
 - Built with this JQuery plugin ***@bkstar18/jquery-ajax-uploader***, of course :-)  
@@ -139,7 +143,8 @@ This section will demonstrate how to build a completed system (both backend & fr
 
 Place the following lines in the ```up()``` function:  
 ```php
-
+<?php
+...
 Schema::create('photos', function (Blueprint $table) {
     $table->bigIncrements('id');
     $table->string('filename');
@@ -148,7 +153,7 @@ Schema::create('photos', function (Blueprint $table) {
     $table->string('disk');
     $table->timestamps();
 });
-
+...
 ```  
 
 **d) Create ```App\Photo``` model**  
@@ -219,6 +224,7 @@ try {
 
 **d) In ```UploadController```**  
 ```php
+<?php
 namespace App\Http\Controllers;
 
 use App\Photo;
@@ -236,7 +242,7 @@ class UploadController extends Controller
     {
         $data = $fileupload->handle($request, 'image', ['allowedExtensions' => ['jpg', 'png', 'jpeg']]);
         if (!$data) {
-            return response()->json(['error' => $fileupload->uploadError], 500);
+            return response()->json(['error' => $fileupload->uploadError], 422);
         }
 
         Photo::create($data);
@@ -291,7 +297,9 @@ $(document).ready(function () {
         },
         onResponse: (response) => {
             let res = JSON.parse(response)
-            $('#gallery').append(`<img id=${res.data.filename} src="${res.data.url}" width="50px">`);
+            if (res.data) {
+                $('#gallery').append(`<img id="${res.data.filename}" src="${res.data.url}" width="50px">`);
+            }
         }
     });
 });
@@ -305,6 +313,6 @@ $(document).ready(function () {
 <script src="{{ asset('js/app.js') }}" defer></script> <!-- remmove this 'defer' -->
 ```  
 
-and add ```@stack('js')``` before the closing tag of ```<body>``` tag.  
+and add ```@stack('js')``` before the closing body tag ```</body>```.  
 
 ***--DONE--***
