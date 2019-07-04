@@ -1,7 +1,7 @@
 /**
  * jQuery bkstar123-ajaxuploader plugin
  * author: tuanha
- * last-mod: 2019-Jul-03
+ * last-mod: 2019-Jul-04
  * Licensed under the MIT license
  */
 ;
@@ -9,12 +9,36 @@
     "use strict";
     let pluginName = 'bkstar123_ajaxuploader';
     $.fn[pluginName] = function(options) {
+        // Plugin settings
         let settings = $.extend({}, $.fn[pluginName].defaults, options);
+
+        // Upload Input DOM Id & selector& name
+        let uploadInputId = $(this).attr('id');
+        let uploadInputSelector = `#${uploadInputId}`;
+        let uploadInputName = $(this).attr('name');
+
+        // DOM Id & selector for the root container of upload section
+        let uploadContainerDivId = `${settings.prefix}-container-${uploadInputId}`;
+        let uploadContainerDivSelector = `#${uploadContainerDivId}`;
+
+        // DOM Id & selector for the container of error alert
+        let uploadErrorContainerDivId = `${settings.prefix}-error-for-${uploadInputId}`;
+        let uploadErrorContainerDivSelector = `#${uploadErrorContainerDivId}`;
+
+        // DOM Id & selector for the container of success alert
+        let uploadSuccessContainerDivId = `${settings.prefix}-success-for-${uploadInputId}`;
+        let uploadSuccessContainerDivSelector = `#${uploadSuccessContainerDivId}`;
+
+        // DOM Id & selector for the container of progress bars
+        let progressContainerDivId = `progress-${uploadInputId}`;
+        let progressContainerDivSelector = `#${progressContainerDivId}`;
+
+        // Wrap file input in the upload container
+        createUploadContainerDiv(uploadInputId);
 
         // Validate file extension, size
         function validateFile(file, uploadInputId) {
             let fileExtension = file.name.split('.').pop();
-            let uploadErrorContainerDivSelector = `#${settings.prefix}-error-for-${uploadInputId}`;
             if (settings.allowedExtensions.indexOf(fileExtension) < 0) {
                 $(uploadErrorContainerDivSelector).append(`<li>${fileExtension} extension is not allowed</li>`);
                 $(uploadErrorContainerDivSelector).show();
@@ -31,7 +55,6 @@
 
         // Validate batch size <-> max number of files in parallel upload
         function validateBatch(files, uploadInputId) {
-            let uploadErrorContainerDivSelector = `#${settings.prefix}-error-for-${uploadInputId}`;
             if (files.length > settings.batchSize) {
                 $(uploadErrorContainerDivSelector).append(`<li>The upload exceeds the limit of ${settings.batchSize} files</li>`);
                 $(uploadErrorContainerDivSelector).show();
@@ -55,10 +78,10 @@
 
         // Remove the container of all progress bars, remove error/success alert containers, clear file input
         function resetUploadStatus(uploadInputId) {
-            $(`#progress-${uploadInputId}`).remove();
-            $(`#${settings.prefix}-error-for-${uploadInputId}`).remove();
-            $(`#${settings.prefix}-success-for-${uploadInputId}`).remove();
-            $(`#${uploadInputId}`).val('');
+            $(progressContainerDivSelector).remove();
+            $(uploadErrorContainerDivSelector).remove();
+            $(uploadSuccessContainerDivSelector).remove();
+            $(uploadInputSelector).val('');
         }
 
         // Create error/success alert container
@@ -69,44 +92,36 @@
 
         // Create an outer container div for uploading section
         function createUploadContainerDiv(uploadInputId) {
-            let className = `${settings.prefix}-container-${uploadInputId}`;
-            if (!elementExist(`#${className}`)) {
-                $(`#${uploadInputId}`).wrap(`<div class="${className}" id="${className}"></div>`);
-                $(`#${className}`).addClass(settings.outerClass);
+            if (!elementExist(uploadContainerDivSelector)) {
+                $(uploadInputSelector).wrap(`<div class="${uploadContainerDivId}" id="${uploadContainerDivId}"></div>`);
+                $(uploadContainerDivSelector).addClass(settings.outerClass);
             }
         }
 
         // Create a container for error alert
         function createUploadErrorContainerDiv(uploadInputId) {
-            let rootContainerSelector = `#${settings.prefix}-container-${uploadInputId}`;
-            let uploadErrorContainerDivId = `${settings.prefix}-error-for-${uploadInputId}`;
-            if (!elementExist(`#${uploadErrorContainerDivId}`)) {
+            if (!elementExist(uploadErrorContainerDivSelector)) {
                 let html = '<div class="alert alert-danger"' +
                     ` id="${uploadErrorContainerDivId}"` +
                     ' style="display:none" role="alert"></div>';
-                $(rootContainerSelector).append(html);
+                $(uploadContainerDivSelector).append(html);
             }
         }
 
         // Create a container for success alert
         function createUploadSuccessContainerDiv(uploadInputId) {
-            let rootContainerSelector = `#${settings.prefix}-container-${uploadInputId}`;
-            let uploadSuccessContainerDivId = `${settings.prefix}-success-for-${uploadInputId}`;
-            if (!elementExist(`#${uploadSuccessContainerDivId}`)) {
+            if (!elementExist(uploadSuccessContainerDivSelector)) {
                 let html = '<div class="alert alert-success"' +
                     ` id="${uploadSuccessContainerDivId}"` +
                     ' style="display:none" role="alert"></div>';
-                $(rootContainerSelector).append(html);
+                $(uploadContainerDivSelector).append(html);
             }
         }
 
-        // Create a progress container for the selected file input & other sub-container for each upload file
+        // Create a progress container for the selected file input which holds a progress bar for each upload file
         function createUploadProgressContainerDiv(uploadInputId, fileIndex, file) {
-            let rootContainerSelector = `#${settings.prefix}-container-${uploadInputId}`;
-            let progressContainerDivId = `progress-${uploadInputId}`;
-
-            if (!elementExist(`#${progressContainerDivId}`)) {
-                $(rootContainerSelector).prepend(`<div id="${progressContainerDivId}"></div>`); // progress container
+            if (!elementExist(progressContainerDivSelector)) {
+                $(uploadContainerDivSelector).prepend(`<div id="${progressContainerDivId}"></div>`); // progress container
             }
 
             // sub-container for each upload file
@@ -118,7 +133,7 @@
                     ` id="${progressBarDivId}"` +
                     ' role="progressbar" style="width: 0%" aria-valuenow="0"' +
                     ' aria-valuemin="0" aria-valuemax="100"></div></div>';
-                $(`#${progressContainerDivId}`).append(label + progressBarHTML);
+                $(progressContainerDivSelector).append(label + progressBarHTML);
             }
         }
 
@@ -137,10 +152,8 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        let uploadSuccessContainerDivSelector = `#${settings.prefix}-success-for-${uploadInputId}`;
                         addUploadAlert(uploadSuccessContainerDivSelector, JSON.parse(xhr.responseText).success);
                     } else {
-                        let uploadErrorContainerDivSelector = `#${settings.prefix}-error-for-${uploadInputId}`;
                         addUploadAlert(uploadErrorContainerDivSelector, JSON.parse(xhr.responseText).error);
                         $(uploadProgressBarDivSelector).removeClass(settings.progressBarColor);
                         $(uploadProgressBarDivSelector).addClass('bg-danger');
@@ -171,9 +184,7 @@
             xhr.send(fd);
         }
 
-        let uploadInputId = $(this).attr('id');
-        createUploadContainerDiv(uploadInputId);
-
+        // Upload by selecting files
         $(this).click(function() {
             resetUploadStatus(uploadInputId);
         });
@@ -185,11 +196,52 @@
             if (!validateBatch(files, uploadInputId)) {
                 return;
             }
-            let uploadInputName = $(this).attr('name');
             for (let i = 0; i < files.length; i++) {
                 sendFile(i, files[i], uploadInputId, uploadInputName);
             }
-        })
+        });
+
+        // Upload by dragging & dropping files
+        let dragDropEvents = ['dragenter', 'dragover', 'drop', 'dragleave'];
+        dragDropEvents.forEach(eventName => {
+            $(uploadContainerDivSelector)[0].addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false)
+        });
+
+        function highlightDragDropArea() {
+            $(uploadContainerDivSelector).css('border', '1px solid black');
+            $(uploadContainerDivSelector).css('padding', '2% 2% 20% 2%');
+            $(uploadContainerDivSelector).css('background-color', '#ebf0f2');
+        }
+
+        function removeHighlightDragDropArea() {
+            $(uploadContainerDivSelector).removeAttr('style');
+        }
+
+        function handleDragEnter(e) {
+            resetUploadStatus(uploadInputId);
+            highlightDragDropArea();
+        }
+
+        function handleDragLeave(e) {
+            removeHighlightDragDropArea();
+        }
+
+        function handleDrop(e) {
+            showUploadStatus(uploadInputId);
+            removeHighlightDragDropArea();
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            for (let i = 0; i < files.length; i++) {
+                sendFile(i, files[i], uploadInputId, uploadInputName);
+            }
+        }
+
+        $(uploadContainerDivSelector)[0].addEventListener('dragenter', handleDragEnter, false);
+        $(uploadContainerDivSelector)[0].addEventListener('dragleave', handleDragLeave, false);
+        $(uploadContainerDivSelector)[0].addEventListener('drop', handleDrop, false);
 
         return this; //for chainablity
     };

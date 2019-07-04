@@ -1,10 +1,10 @@
 # JQuery-Ajax-Uploader
 
-This lightweight JQuery plugin enables a basic Ajax file uploading feature on the frontend side. It is supposed to work well with any Laravel backend.  
+This lightweight JQuery plugin enables basic Ajax file uploading features (select, drag & drop) on the frontend side. It is supposed to work well with any Laravel backend.  
 
 ## 1. Requirements
 
-You must load JQuery before using this plugin. 
+This plugin does not support the old versions of Internet Explorer.  
 
 You should make sure that the page html layout has the following ```<meta>``` tag:  
 ```html
