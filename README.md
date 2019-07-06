@@ -272,7 +272,7 @@ Place the following code:
                     @endif
 
                     <div class="form-group">
-                        <label for="video">Upload Images</label>
+                        <label for="image-upload">Upload Images</label>
                         <input type="file" class="form-control" name="image" id="image-upload" multiple>
                         <div class="gallery" id="gallery"></div>
                     </div>

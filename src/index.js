@@ -1,7 +1,7 @@
 /**
  * jQuery bkstar123-ajaxuploader plugin
  * author: tuanha
- * last-mod: 2019-Jul-04
+ * last-mod: 2019-Jul-06
  * Licensed under the MIT license
  */
 ;
@@ -30,7 +30,7 @@
         let uploadSuccessContainerDivSelector = `#${uploadSuccessContainerDivId}`;
 
         // DOM Id & selector for the container of progress bars
-        let progressContainerDivId = `progress-${uploadInputId}`;
+        let progressContainerDivId = `${settings.prefix}-progress-${uploadInputId}`;
         let progressContainerDivSelector = `#${progressContainerDivId}`;
 
         // Wrap file input in the upload container
@@ -125,12 +125,12 @@
             }
 
             // sub-container for each upload file
-            let progressBarDivId = `progress-bar-${uploadInputId}-${fileIndex}`;
-            if (!elementExist(`#${progressBarDivId}`)) {
+            let uploadProgressBarDivId = `${settings.prefix}-progress-bar-${uploadInputId}-${fileIndex}`;
+            if (!elementExist(`#${uploadProgressBarDivId}`)) {
                 let label = `<label>${file.name}</label>`;
                 let progressBarHTML = '<div class="progress" style="height:1.2rem">' +
                     `<div class="progress-bar ${settings.progressBarColor} progress-bar-striped"` +
-                    ` id="${progressBarDivId}"` +
+                    ` id="${uploadProgressBarDivId}"` +
                     ' role="progressbar" style="width: 0%" aria-valuenow="0"' +
                     ' aria-valuemin="0" aria-valuemax="100"></div></div>';
                 $(progressContainerDivSelector).append(label + progressBarHTML);
@@ -148,7 +148,7 @@
             fd.append(uploadInputName, file);
 
             let xhr = new XMLHttpRequest();
-            let uploadProgressBarDivSelector = `#progress-bar-${uploadInputId}-${fileIndex}`;
+            let uploadProgressBarDivSelector = `#${settings.prefix}-progress-bar-${uploadInputId}-${fileIndex}`;
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
