@@ -4,7 +4,8 @@ This lightweight JQuery plugin enables basic Ajax file uploading features (selec
 
 ## 1. Requirements
 
-This plugin does not support the old versions of Internet Explorer.  
+- This plugin does not support the old versions of Internet Explorer.  
+- This plugin requires Bootstrap 4.x  
 
 You should make sure that the page html layout has the following ```<meta>``` tag:  
 ```html
