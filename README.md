@@ -89,13 +89,13 @@ Sample structure of JSON responses are as follows:
 ```
 
 **Advanced use**:  
-The plugin will automatically wrap the selected ```<input type="file" />```  element in a outer element ```<div class="bkstar123-ajaxuploader-container-image-upload" id="bkstar123-ajaxuploader-container-image-upload">```  
+The plugin will automatically wrap the selected ```<input type="file" />```  element in an outer element ```<div class="bkstar123-ajaxuploader-container-image-upload" id="bkstar123-ajaxuploader-container-image-upload">```  
 
 Where ```bkstar123-ajaxuploader``` is a prefix that you can change by ```prefix``` key in the ```settings``` argument.  
 
 You can also add more class to the wrapping element by ```outerClass``` key in the ```settings``` argument.  
 
-There are two callback hooks that you can use, that are, ```beforeSend(xhr)``` and ```onResponse(respomse)```:  
+There are two callback hooks that you can use, that are, ```beforeSend(xhr)``` and ```onResponse(response)```:  
 
 - ```beforeSend(xhr)``` hook is called right before sending files to the server, and it is passed with the whole XmlHttpRequest object. You can use this hook to modify the behavior of XHR object before it start sending files to the server, for example to add more request header like ```xhr.setRequestHeader(header, value)```.  
 
