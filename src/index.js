@@ -38,7 +38,7 @@
 
         // Validate file extension, size
         function validateFile(file, uploadInputId) {
-            let fileExtension = file.name.split('.').pop();
+            let fileExtension = file.name.split('.').pop().toLowerCase();
             if (settings.allowedExtensions.indexOf(fileExtension) < 0) {
                 $(uploadErrorContainerDivSelector).append(`<li>${fileExtension} extension is not allowed</li>`);
                 $(uploadErrorContainerDivSelector).show();
